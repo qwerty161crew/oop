@@ -11,7 +11,7 @@ class InfoMessage:
     speed: float
     calories: float
 
-    MESSEGE: ClassVar[str] = (
+    MESSEGE = (
         'Тип тренировки: {training_type}; '
         'Длительность: {duration:.3f} ч.; '
         'Дистанция: {distance:.3f} км; '
