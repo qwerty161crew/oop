@@ -78,9 +78,9 @@ class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     CALORIES_WEIGHT_MULTIPLIER = 0.035
     CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
-    MIN_IN_H = 60
     CM_IN_M = 100
-    KMH_IN_MSEC = 0.278
+    KMH_IN_MSEC = round(Training.M_IN_KM
+                        / (Training.MIN_IN_H * Training.MIN_IN_H), 3)
 
     def __init__(self,
                  action: int,
@@ -101,7 +101,7 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP = 1.38
-    СALORIES_MSPEED_MULTIPLIER = 1.1
+    СALORIES_SPEED_MULTIPLIER = 1.1
     COEFF_COUNT_СALORIES = 2
 
     def __init__(self,
@@ -119,7 +119,7 @@ class Swimming(Training):
                 / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.СALORIES_MSPEED_MULTIPLIER)
+        return ((self.get_mean_speed() + self.СALORIES_SPEED_MULTIPLIER)
                 * self.COEFF_COUNT_СALORIES * self.weight * self.duration)
 
 
@@ -130,12 +130,21 @@ TRAINING: Dict[str, Type[Training]] = {
 }
 
 
-def read_package(workout_type: str, data: list) -> Training:
+def read_package(workout_type: str, data) -> Training:
     """Прочитать данные полученные от датчиков."""
-    if workout_type in TRAINING:
-        return TRAINING[workout_type](*data)
-    raise ValueError('Недопустимый тип тренировки. '
-                     f'Возможны варианты: {" ".join(TRAINING.keys())}')
+    trainings: dict = {
+        'SWM': (Swimming, 5),
+        'RUN': (Running, 3),
+        'WLK': (SportsWalking, 4)
+    }
+
+    if workout_type not in trainings:
+        raise ValueError("Неожиданный тип тренировки")
+
+    if trainings[workout_type][1] != len(data):
+        raise ValueError('Неправильный тип данных')
+
+    return trainings[workout_type][0](*data)
 
 
 def main(training: Training) -> None:
