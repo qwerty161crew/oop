@@ -78,10 +78,9 @@ class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     CALORIES_WEIGHT_MULTIPLIER = 0.035
     CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
+    MIN_IN_H = 60
     CM_IN_M = 100
-    M_IN_KM = 1000
-    KMH_IN_MSEC = (M_IN_KM / ((M_IN_KM * CALORIES_WEIGHT_MULTIPLIER * CM_IN_M)
-                              + CM_IN_M))
+    KMH_IN_MSEC = 1000 / MIN_IN_H / MIN_IN_H
 
     def __init__(self,
                  action: int,
@@ -92,16 +91,11 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        return ((self.CALORIES_WEIGHT_MULTIPLIER
-                * self.weight
-                + ((self.get_mean_speed()
-                    * round(self.KMH_IN_MSEC, 3))**2
-                   / (self.height
-                   / self.CM_IN_M))
+        return ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight 
+                + ((self.get_mean_speed() * round(self.KMH_IN_MSEC, 3))**2
+                   / (self.height / self.CM_IN_M))
                 * self.CALORIES_SPEED_HEIGHT_MULTIPLIER
-                * self.weight)
-                * self.duration
-                * self.MIN_IN_H)
+                * self.weight) * self.duration * self.MIN_IN_H)
 
 
 class Swimming(Training):
@@ -138,10 +132,10 @@ TRAINING: Dict[str, Type[Training]] = {
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    if workout_type not in TRAINING:
-        raise NotImplementedError('Некорректный пакет')
-
-    return TRAINING[workout_type](*data)
+    if workout_type in TRAINING:
+        return TRAINING[workout_type](*data)
+    raise ValueError('Недопустимый тип тренировки. '
+                     f'Возможны варианты: {" ".join(TRAINING.keys())}')
 
 
 def main(training: Training) -> None:
