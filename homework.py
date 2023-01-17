@@ -80,7 +80,7 @@ class SportsWalking(Training):
     CALORIES_SPEED_HEIGHT_MULTIPLIER = 0.029
     MIN_IN_H = 60
     CM_IN_M = 100
-    KMH_IN_MSEC = 1000 / MIN_IN_H / MIN_IN_H
+    KMH_IN_MSEC = 0.278
 
     def __init__(self,
                  action: int,
