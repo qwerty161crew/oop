@@ -144,7 +144,7 @@ def read_package(workout_type: str, data) -> Training:
                          f"Возможные названия тренировок: {training_names}")
 
     if trainings[workout_type][1] != len(data):
-        raise ValueError('Неправильный тип данных')
+        raise ValueError(f'Неправильный тип данных: {training_names} ')
 
     return trainings[workout_type][0](*data)
 
