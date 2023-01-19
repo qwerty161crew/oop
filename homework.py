@@ -123,32 +123,28 @@ class Swimming(Training):
                 * self.COEFF_COUNT_СALORIES * self.weight * self.duration)
 
 
-TRAINING: Dict[str, Type[Training]] = {
-    'SWM': Swimming,
-    'RUN': Running,
-    'WLK': SportsWalking
+TRAININGS: Dict[str, Type[Training]] = {
+    'SWM': (Swimming, 5),
+    'RUN': (Running, 3),
+    'WLK': (SportsWalking, 4)
 }
 
 
 def read_package(workout_type: str, data) -> Training:
     """Прочитать данные полученные от датчиков."""
-    trainings: dict = {
-        'SWM': (Swimming, 5),
-        'RUN': (Running, 3),
-        'WLK': (SportsWalking, 4)
-    }
 
-    if workout_type not in trainings:
+    if workout_type not in TRAININGS:
         raise ValueError(f"Неправильный тип тренировки\n"
                          f"Возможные названия тренировок: {workout_type}")
 
-    if trainings[workout_type][1] != len(data):
-        raise ValueError(f'Неправильный тип данных: {workout_type}.'
-                         f'Такого вида тренировки не существует '
-                         f'{trainings[workout_type][1]}.'
-                         f'Не правильное количество данных {len(data)} ')
+    if TRAININGS[workout_type][1] != len(data):
+        raise ValueError(f'Неправильный тип данных: '
+                         f'{TRAININGS[workout_type][1]}.'
+                         'Такая тренировка не поддерживается'
+                         f'У вас некорректные данные: {len(data)}.'
+                         'Чиловые данные могут быть от 3 до 5')
 
-    return trainings[workout_type][0](*data)
+    return TRAININGS[workout_type][0](*data)
 
 
 def main(training: Training) -> None:
