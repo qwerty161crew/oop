@@ -139,12 +139,14 @@ def read_package(workout_type: str, data) -> Training:
     }
 
     if workout_type not in trainings:
-        training_names = ', '.join(trainings)
         raise ValueError(f"Неправильный тип тренировки\n"
-                         f"Возможные названия тренировок: {training_names}")
+                         f"Возможные названия тренировок: {workout_type}")
 
     if trainings[workout_type][1] != len(data):
-        raise ValueError(f'Неправильный тип данных: {training_names} ')
+        raise ValueError(f'Неправильный тип данных: {workout_type}.'
+                         f'Такого вида тренировки не существует '
+                         f'{trainings[workout_type][1]}.'
+                         f'Не правильное количество данных {len(data)} ')
 
     return trainings[workout_type][0](*data)
 
